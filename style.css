@@ -1,4 +1,4 @@
-body {
+* {
     background-color: #1f1e33;
     text-align: center;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
@@ -9,16 +9,39 @@ h1 {
     font: bold;
 }
 
-div .tile {
-    width: 1cm;
-    height: 1cm;
-    border: 3px solid #003355;
+button {
+    border: 3px solid aliceblue;
     border-radius: 10%;
     box-sizing: border-box;
-    background-color: #004466;
+    background-color: #13121f;
+
+    text-align: center;
+    font-size: larger;
+
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 40px;
+    padding-right: 40px;
+}
+
+.tile {
+    width: 1cm;
+    height: 1cm;
+    border: 3px solid #b69468;
+    border-radius: 10%;
+    box-sizing: border-box;
+    background-color: #d3ab78;
+    margin: 100px;
 
     text-align: center;
     vertical-align: middle;
+    font-size: larger;
+    color: black;
+}
+
+.empty-tile {
+    border: 3px solid #003355;
+    background-color: #004466;
 }
 
 #main-ui {

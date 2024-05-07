@@ -14,11 +14,12 @@ export class AnagramsController {
 
     handleKeyPress(key) {
         if (key == "ENTER") {
+            this.submitWord(this.#model.getTextInputAsWord());
             return;
         } else if (key == "BACKSPACE") {
             this.#model.backspaceTextInput();
             return;
-        } else if (AU.characters.includes(key)) {
+        } else {
             this.#model.addToTextInput(key);
             return;
         }
