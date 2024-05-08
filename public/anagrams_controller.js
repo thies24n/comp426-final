@@ -13,15 +13,25 @@ export class AnagramsController {
     }
 
     async handleKeyPress(key) {
-        if (key == "ENTER") {
-            await this.#model.submitWord(this.#model.getTextInputAsWord());
-            return;
-        } else if (key == "BACKSPACE") {
-            this.#model.backspaceTextInput();
-            return;
-        } else {
-            this.#model.addToTextInput(key);
-            return;
+        switch(this.#model.getGameState()) {
+            // Press any key to start
+            case "uninitialized":
+                this.startGame();
+                return;
+
+            // If game is running
+            case "playing":
+                if (key == "ENTER") {
+                    await this.#model.submitWord(this.#model.getTextInputAsWord());
+                    return;
+                } else if (key == "BACKSPACE") {
+                    this.#model.backspaceTextInput();
+                    return;
+                } else {
+                    this.#model.addToTextInput(key);
+                    return;
+                }
+                break;
         }
     }
 
