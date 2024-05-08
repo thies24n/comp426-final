@@ -64,14 +64,18 @@ export class AnagramsView {
         <table id="results">
             <tr><td>Found Words</td><td>Missing Words</td></tr>
             <tr>
-                <td><table class="results-table" id="results-found"></table></td>
-                <td><table class="results-table" id="results-unfound"></table></td>
+                <td class="results-table-td">
+                    <table class="results-table" id="results-found"></table>
+                </td>
+                <td class="results-table-td">
+                    <table class="results-table" id="results-unfound"></table>
+                </td>
             </tr>
         </table>`;
-        let res_tables = document.getElementsByClassName("results-table");
+        let res_tables = document.getElementsByClassName("results-table-td");
         for (let i = 0; i < res_tables.length; i++) {
             const rt = res_tables[i];
-            rt.style.width = this.#model.getLetterCount() * 0.5 + 'cm';
+            rt.style.width = this.#model.getLetterCount() * 0.75 + 'cm';
         }
 
         render_div.append(gameoverui);
@@ -84,7 +88,7 @@ export class AnagramsView {
             this.#controller.handleKeyPress(key);
         });
 
-        this.#model.addEventListener('stateupdate', (e) => {
+        this.#model.addEventListener('stateupdate', async (e) => {
             if (this.#model.getGameState() == "playing") {
                 let t_table = createTileTable();
                 let s_text = createSubmitText();
@@ -104,9 +108,22 @@ export class AnagramsView {
                 .forEach((word, i) => {
                     let resftr = document.createElement("tr");
                     resftr.id = "results-found-" + i;
+                    resftr.classList.add("results-table-tr");
                     resftr.innerHTML = `<td>${word}</td>
                         <td>${AU.getWordValue(word)}</td>`;
                     res_found.append(resftr);
+                })
+
+                let missing_words = await fetch(AU.base_url + "game/missing-words/" + this.#model.getGameID(), {method: "GET"})
+                    .then(response => response.json());
+
+                missing_words.sort((word_a, word_b) => word_b.length - word_a.length)
+                .forEach((word, i) => {
+                    let resutr = document.createElement("tr");
+                    resutr.id = "results-unfound-" + i;
+                    resutr.innerHTML = `<td class="results-table-tdtd">${word}</td>
+                        <td class="results-table-tdtd">${AU.getWordValue(word)}</td>`;
+                    res_unfound.append(resutr);
                 })
             }
         });
@@ -177,7 +194,6 @@ export class AnagramsView {
         })
 
         let animateMainUI = (game_over) => {
-            clearInterval(submit_word_anim);
             let completion = 0;
             const completion_max = game_over ? 500 : 1;
             const start_percent = game_over ? 50 : -50;

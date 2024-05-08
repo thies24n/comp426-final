@@ -53,11 +53,22 @@ table {
     background-color: #004466;
 }
 
+.results-table-td {
+    display: table-cell;
+}
+
+.results-table-tdtd:nth-child(even) {
+    align-items: end;
+}
+
 .results-table {
     overflow-y: auto;
-    width: 100%;
+    overflow-x: hidden;
+    width: 5cm;
     height: 10cm;
     table-layout: fixed;
+    display: flex;
+    flex-direction: column;
 
     border: 3px solid #003355;
     border-radius: 10px;
@@ -65,9 +76,14 @@ table {
     background-color: #004466;
 }
 
+.results-table > * {
+    display: flex;
+    flex-direction: row;
+}
+
 .results-table * {
-    height: 0.5cm;
     background-color: #00000000;
+    display: table-cell;
 }
 
 .results-table tr:nth-child(odd) {
@@ -76,6 +92,11 @@ table {
 
 .results-table td {
     display: table-cell;
+    width: 50%;
+}
+
+.results-table td:nth-child(odd) {
+    text-align: left;
 }
 
 #gameover-ui {

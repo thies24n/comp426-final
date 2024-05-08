@@ -54,7 +54,8 @@ export class AnagramsGame {
         return {
             id: this.getID(),
             dictionary: this.getDictionary().json(),
-            letter_count: this.getLetterCount()
+            letter_count: this.getLetterCount(),
+            word_log: this.getWordLog()
         }
     }
 

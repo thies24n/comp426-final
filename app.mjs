@@ -53,6 +53,17 @@ app.post('/game/submit/:id', (req, res) => {
     return;
 })
 
+app.get('/game/missing-words/:id', (req, res) => {
+    /* Get all words that the player missed. */
+    const id = req.params.id;
+    const game = AnagramsGame.getGameFromID(id);
+    if (!game) {
+        res.status(400).send("Game with id " + id + " not found.");
+        return;
+    }
+    res.status(201).json(AnagramsDictionary.getMissingWords(game));
+})
+
 // app.get('/dictionary/starter/:letters', (req, res) => {
 //     /* Generate a starter word */
 //     let letters = req.params.letters ? Number(req.params.letters) : 7;

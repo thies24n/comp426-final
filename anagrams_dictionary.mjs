@@ -48,6 +48,13 @@ export class AnagramsDictionary {
         return false;
     }
 
+    static getMissingWords(game) {
+        let valid_anagrams = game.getDictionary().getAllValidAnagrams();
+        let word_log = game.getWordLog();
+
+        return valid_anagrams.filter((word) => !word_log.includes(word));
+    }
+
     isAnagram(word) {
         const letters = this.getStarterWord().split("");
         return word.split("").every((char) => {
@@ -66,6 +73,20 @@ export class AnagramsDictionary {
 
     isValidAnagram(word) {
         return this.isAnagram(word) && AnagramsDictionary.isWord(word);
+    }
+
+    getAllValidAnagrams() {
+        let starter_word = this.getStarterWord();
+        const letters = [...new Set(starter_word.split(""))];
+        let res = letters.slice();
+        let anagrams = letters.slice();
+
+        for (let i = 1; i < starter_word.length; i++) {
+            anagrams = anagrams.flatMap((prefix) => letters.map((char) => prefix + char));
+            res = res.concat(anagrams);
+        }
+
+        return res.filter((word) => word.length >= 3 && this.isValidAnagram(word));
     }
 
     getStarterWord() {
