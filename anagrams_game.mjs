@@ -6,6 +6,7 @@ export class AnagramsGame {
     #id
     #dictionary
     #letter_count
+    #word_log
     
     static #all_games = [];
     static #next_id = 0;
@@ -14,6 +15,7 @@ export class AnagramsGame {
         this.#id = id;
         this.#dictionary = dictionary;
         this.#letter_count = dictionary.getStarterWord().length;
+        this.#word_log = [];
     }
 
     static create(letter_count=7) {
@@ -27,6 +29,10 @@ export class AnagramsGame {
     static getGameFromID(id) { 
         return this.#all_games[id];
     }
+    
+    addToWordLog(word) {
+        this.#word_log.push(word);
+    }
 
     getID() {
         return this.#id;
@@ -38,6 +44,10 @@ export class AnagramsGame {
 
     getLetterCount() {
         return this.#letter_count;
+    }
+
+    getWordLog() {
+        return this.#word_log;
     }
 
     json() {

@@ -10,6 +10,11 @@ export class AnagramsView {
 
     render(render_div) {
         /*
+            "Global" variables
+        */
+        let submit_word_anim = null;
+
+        /*
             Header
         */
         let header = document.createElement('h1');
@@ -46,6 +51,7 @@ export class AnagramsView {
         this.#model.addEventListener('stateupdate', (e) => {
             if (this.#model.getGameState() == "playing") {
                 createTileTable();
+                createSubmitText();
             }
         });
 
@@ -72,8 +78,38 @@ export class AnagramsView {
             });
         });
 
+        this.#model.addEventListener('submitword', (e) => {
+            let submittext = document.getElementById("submit-text");
+            submittext.style.opacity = 0;
+            submittext.innerText = e.detail.message;
+
+            // Animate submittext
+            let tiletablerect = document.getElementById("tile-table").getBoundingClientRect();
+            let completion = 0;
+            const completion_max = 200;
+            clearInterval(submit_word_anim);
+            submit_word_anim = setInterval(() => {
+                if (completion >= completion_max) {
+                    clearInterval(submit_word_anim);
+                } else {
+                    completion++;
+                    submittext.style.top = 50 - 50 * (completion / completion_max) + '%';
+                    submittext.style.opacity = 1 - completion / completion_max;
+                }
+            }, 5);
+        });
+
+        let createSubmitText = () => {
+            let submittext = document.createElement("p");
+            submittext.append("");
+            submittext.id = "submit-text";
+            mainui.append(submittext);
+            return submittext;
+        }
+
         let createTileTable = () => {
             let tiletable = document.createElement("table");
+            tiletable.id = "tile-table";
             tiletable.append();
             tiletable.innerHTML = `<tr id="bank-row"></tr><tr id="input-row"></tr>`;
             mainui.append(tiletable); 

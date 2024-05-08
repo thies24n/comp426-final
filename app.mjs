@@ -35,9 +35,21 @@ app.post('/game/submit/:id', (req, res) => {
         res.status(400).send("Game with id " + id + " not found.");
         return;
     }
-    const result = game.getDictionary().isValidAnagram(word);
-    // TODO: Make word log and scoring server-sided?
-    res.status(201).send(result);
+
+    const result = {is_valid: false, message: ""};
+
+    if (word.length < 3) {
+        result.message = "Too short";
+    } else if (game.getWordLog().includes(word)) {
+        result.message = "Already found";
+    } else if (!game.getDictionary().isValidAnagram(word)) {
+        result.message = "Not a word";
+    } else {
+        result.is_valid = true;
+        result.message = word + " +" + AU.getWordValue(word);
+        game.addToWordLog(word);
+    }
+    res.status(201).json(result);
     return;
 })
 

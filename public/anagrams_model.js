@@ -38,10 +38,18 @@ export class AnagramsModel extends EventTarget {
         this.updateState("playing");
     }
 
-    async generateLetterBank() {
-        const res = await fetch(AU.base_url + "game/" + this.getLetterCount(), {method: "POST"})
+    async submitWord(word) {
+        /* Submit a word and check for validity. */
+        let res = await fetch(AU.base_url + "game/submit/" + this.getGameID()
+            + "?word=" + this.getTextInputAsWord(), {method: "POST"})
             .then(response => response.json());
-        return res.dictionary.starter_word.split("");
+
+        if (res.is_valid) {
+            this.clearTextInput();
+            this.addToWordLog(word);
+        }
+
+        this.dispatchEvent(new CustomEvent('submitword', {detail: res}));
     }
 
     addToTextInput(char) {
@@ -88,7 +96,7 @@ export class AnagramsModel extends EventTarget {
     }
 
     getScore() {
-        return this.getWordLog().reduce((total_score, word) => total_score += 100 + 300 * (word.length - 3));
+        return this.getWordLog().reduce((total_score, word) => total_score += AU.getWordValue(word));
     }
 
     getTextInput() {
