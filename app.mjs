@@ -69,7 +69,6 @@ app.post('/game/submit/:id', async (req, res) => {
             }
         })
     }
-    console.log(totalpoints.points);
 
     res.status(201).json(result);
     return;
@@ -105,38 +104,6 @@ app.get('/game/totalpoints', async (req, res) => {
     res.status(201).json(totalpoints.points);
 })
 
-// app.get('/dictionary/starter/:letters', (req, res) => {
-//     /* Generate a starter word */
-//     let letters = req.params.letters ? Number(req.params.letters) : 7;
-//     if (!AU.letter_counts.includes(letters)) {
-//         res.status(400).send("Invalid letter count");
-//         return;
-//     }
-//     ad = AnagramsDictionary.create(letters);
-//     res.status(201).json(ad);
-// });
-
-// app.get('/dictionary/check/:starterword', (req, res) => {
-//     /* Checks if a word is a valid anagram of starterword */
-//     let starter_word = req.params.starterword
-//     let word = req.query.word ? Number(req.query.word) : 7;
-//     if (!AU.letter_counts.includes(letters)) {
-//         res.status(400).send("Invalid letter count");
-//         return;
-//     }
-//     res.status(201).json(AnagramsDictionary.create(letters));
-// });
-
-// app.get('/nodes', (req, res) => {
-//     /* Get all nodes */
-//     let depth = req.query.depth ? Number(req.query.depth) : 1000;
-//     if (depth == NaN || depth < 0) {
-//         res.status(400).send("Depth is non-numeric or negative");
-//         return;
-//     }
-
-//     res.status(201).json(Nodes.getAllNodes(depth));
-// });
 
 app.listen(port, () => {
     console.log('Running...');

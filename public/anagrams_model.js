@@ -15,7 +15,7 @@ export class AnagramsModel extends EventTarget {
     #timer_interval
     #word_log
 
-    static #TIMER_DURATION = 10;
+    static #TIMER_DURATION = 60;
 
     constructor() {
         super();

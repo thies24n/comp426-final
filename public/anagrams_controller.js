@@ -14,9 +14,8 @@ export class AnagramsController {
 
     async handleKeyPress(key) {
         switch(this.#model.getGameState()) {
-            // Press any key to start
+            case "gameover":
             case "uninitialized":
-                this.startGame();
                 return;
 
             // If game is running
