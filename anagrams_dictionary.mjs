@@ -1,5 +1,6 @@
 import * as fs from 'node:fs';
 import {AU} from './public/anagrams_utils.mjs';
+import { response } from 'express';
 
 export class AnagramsDictionary {
 
@@ -48,11 +49,26 @@ export class AnagramsDictionary {
         return false;
     }
 
-    static getMissingWords(game) {
+    static async getMissingWords(game, filter_profanity=true) {
         let valid_anagrams = game.getDictionary().getAllValidAnagrams();
         let word_log = game.getWordLog();
 
-        return valid_anagrams.filter((word) => !word_log.includes(word));
+        valid_anagrams = valid_anagrams.filter((word) => !word_log.includes(word));
+        if (filter_profanity) {
+            let res = null;
+            try {
+                res = await fetch("https://www.purgomalum.com/service/json?text="
+                + JSON.stringify(valid_anagrams).split(",").join(", "), {method: "GET"})
+                .then(response => response.json())
+                .then(response => JSON.parse(response.result));
+            } catch (error) {
+                console.log(error);
+            }
+            if (res) {
+                return res;
+            }
+        }
+        return valid_anagrams;
     }
 
     isAnagram(word) {

@@ -53,7 +53,7 @@ app.post('/game/submit/:id', (req, res) => {
     return;
 })
 
-app.get('/game/missing-words/:id', (req, res) => {
+app.get('/game/missing-words/:id', async (req, res) => {
     /* Get all words that the player missed. */
     const id = req.params.id;
     const game = AnagramsGame.getGameFromID(id);
@@ -61,7 +61,7 @@ app.get('/game/missing-words/:id', (req, res) => {
         res.status(400).send("Game with id " + id + " not found.");
         return;
     }
-    res.status(201).json(AnagramsDictionary.getMissingWords(game));
+    res.status(201).json(await AnagramsDictionary.getMissingWords(game));
 })
 
 // app.get('/dictionary/starter/:letters', (req, res) => {

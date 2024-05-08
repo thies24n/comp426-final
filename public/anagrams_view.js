@@ -174,10 +174,9 @@ export class AnagramsView {
 
         this.#model.addEventListener('submitword', (e) => {
             // Add submit text
-            let submittext = document.getElementById("submit-text");
-            submittext.style.opacity = 0;
-            submittext.style.color = 'aliceblue';
-            submittext.innerText = e.detail.message;
+            s_text.style.opacity = 0;
+            s_text.style.color = 'aliceblue';
+            s_text.innerText = e.detail.message;
             let word = (e.detail.is_valid) ? e.detail.message.split(" ")[0] : "";
 
             // Animate submittext
@@ -190,12 +189,12 @@ export class AnagramsView {
                 } else {
                     completion++;
                     let completion_ratio = completion / completion_max;
-                    submittext.style.top = 50 - 50 * (completion_ratio) + '%';
-                    submittext.style.opacity = 1 - completion_ratio;
+                    s_text.style.top = 50 - 50 * (completion_ratio) + '%';
+                    s_text.style.opacity = 1 - completion_ratio;
                     
                     // Play a rainbow animation if PANGRAM
                     if (word.length == this.#model.getLetterCount()) {
-                        submittext.style.color = `hsl(${completion_ratio * 720} 80 80)`;
+                        s_text.style.color = `hsl(${completion_ratio * 720} 80 80)`;
                     }
                 }
             }, 5);
@@ -210,8 +209,10 @@ export class AnagramsView {
 
         this.#model.addEventListener('timerupdate', (e) => {
             let timer = document.getElementById("scoreboard-timer");
-            let time = this.#model.getTimer()
-            timer.innerText = timerString(time);
+            let time = this.#model.getTimer();
+            if (timer) {
+                timer.innerText = timerString(time);
+            }
         })
 
         let animateMainUI = (game_over) => {

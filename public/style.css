@@ -62,8 +62,6 @@ table {
 }
 
 .results-table {
-    overflow-y: auto;
-    overflow-x: hidden;
     width: 5cm;
     height: 10cm;
     table-layout: fixed;
@@ -74,6 +72,10 @@ table {
     border-radius: 10px;
     box-sizing: border-box;
     background-color: #004466;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
 }
 
 .results-table > * {
