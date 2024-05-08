@@ -3,6 +3,11 @@
     text-align: center;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     color: aliceblue;
+    white-space: nowrap;
+}
+
+body {
+    overflow: hidden;
 }
 
 h1 {
@@ -22,6 +27,10 @@ button {
     padding-bottom: 10px;
     padding-left: 40px;
     padding-right: 40px;
+}
+
+table {
+    table-layout: fixed;
 }
 
 .tile {
@@ -44,6 +53,42 @@ button {
     background-color: #004466;
 }
 
+.results-table {
+    overflow-y: auto;
+    width: 100%;
+    height: 10cm;
+    table-layout: fixed;
+
+    border: 3px solid #003355;
+    border-radius: 10px;
+    box-sizing: border-box;
+    background-color: #004466;
+}
+
+.results-table * {
+    height: 0.5cm;
+    background-color: #00000000;
+}
+
+.results-table tr:nth-child(odd) {
+    background-color: #003355;
+}
+
+.results-table td {
+    display: table-cell;
+}
+
+#gameover-ui {
+    position: absolute;
+    width: fit-content;
+    top: 50%;
+    left: 150%;
+    transform: translate(-50%, -50%);
+    
+    display: inline;
+    align-items: center;
+}
+
 #main-ui {
     /* https://css-tricks.com/quick-css-trick-how-to-center-an-object-exactly-in-the-center/ */
     position: absolute;
@@ -51,12 +96,16 @@ button {
     left: 50%;
     transform: translate(-50%, -50%);
     
-    display: flex;
+    display: inline;
     align-items: center;
 }
 
+#results {
+    table-layout: fixed;
+}
+
 #scoreboard {
-    position: fixed;
+    position: inherit;
     left: 50%;
     top: 120%;
     transform: translate(-50%, -50%);

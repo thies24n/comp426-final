@@ -11,7 +11,11 @@ export class AnagramsModel extends EventTarget {
     #letter_bank
     #letter_count
     #text_input
+    #timer
+    #timer_interval
     #word_log
+
+    static #TIMER_DURATION = 10;
 
     constructor() {
         super();
@@ -19,6 +23,8 @@ export class AnagramsModel extends EventTarget {
         this.#letter_bank = [];
         this.#letter_count = 7;
         this.#text_input = [];
+        this.#timer = AnagramsModel.#TIMER_DURATION;
+        this.#timer_interval = null;
         this.#word_log = [];
     }
 
@@ -28,6 +34,7 @@ export class AnagramsModel extends EventTarget {
         this.#letter_count = letter_count;
         this.#text_input = [];
         this.#word_log = [];
+        this.#timer = AnagramsModel.#TIMER_DURATION;
 
         const game = await fetch(AU.base_url + "game/" + letter_count, {method: "POST"})
         .then(response => response.json());
@@ -36,6 +43,9 @@ export class AnagramsModel extends EventTarget {
         this.#letter_bank = game.dictionary.starter_word.split("");
 
         this.updateState("playing");
+
+        // Initialize timer
+        this.#timer_interval = setInterval(AnagramsModel.decrementTimer, 1000, this);
     }
 
     async submitWord(word) {
@@ -96,7 +106,7 @@ export class AnagramsModel extends EventTarget {
     }
 
     getScore() {
-        return this.getWordLog().reduce((total_score, word) => total_score += AU.getWordValue(word));
+        return this.getWordLog().reduce((total_score, word) => total_score += AU.getWordValue(word), 0);
     }
 
     getTextInput() {
@@ -105,6 +115,14 @@ export class AnagramsModel extends EventTarget {
 
     getTextInputAsWord() {
         return this.getTextInput().join("");
+    }
+
+    getTimer() {
+        return this.#timer;
+    }
+
+    getTimerInterval() {
+        return this.#timer_interval;
     }
 
     getUsableChars() {
@@ -120,6 +138,19 @@ export class AnagramsModel extends EventTarget {
 
     getWordLog() {
         return this.#word_log;
+    }
+
+    setTimer(time) {
+        this.#timer = time;
+    }
+
+    static decrementTimer(model) {
+        model.setTimer(model.getTimer() - 1);
+        if(model.getTimerInterval() && model.getTimer() == 0) {
+            model.updateState('gameover');
+            clearInterval(model.getTimerInterval());
+        }
+        model.dispatchEvent(new Event('timerupdate'));
     }
 
 }

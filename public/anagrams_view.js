@@ -1,3 +1,5 @@
+import {AU} from './anagrams_utils.mjs';
+
 export class AnagramsView {
 
     #model
@@ -13,6 +15,7 @@ export class AnagramsView {
             "Global" variables
         */
         let submit_word_anim = null;
+        let gameover_anim = null;
 
         /*
             Header
@@ -51,6 +54,29 @@ export class AnagramsView {
         let s_board = null;
 
         /*
+            Game over UI
+        */
+        let gameoverui = document.createElement('div');
+        gameoverui.id = "gameover-ui";
+        gameoverui.append();
+        gameoverui.innerHTML = `<h1>RESULTS</h1>
+        <h2>Score: <span class="scorekeeper">0</span></h2>
+        <table id="results">
+            <tr><td>Found Words</td><td>Missing Words</td></tr>
+            <tr>
+                <td><table class="results-table" id="results-found"></table></td>
+                <td><table class="results-table" id="results-unfound"></table></td>
+            </tr>
+        </table>`;
+        let res_tables = document.getElementsByClassName("results-table");
+        for (let i = 0; i < res_tables.length; i++) {
+            const rt = res_tables[i];
+            rt.style.width = this.#model.getLetterCount() * 0.5 + 'cm';
+        }
+
+        render_div.append(gameoverui);
+
+        /*
             Events n stuff
         */
         document.addEventListener('keydown', (e) => {
@@ -66,6 +92,22 @@ export class AnagramsView {
                 t_table.style.display = "inline";
                 s_text.style.display = "inline";
                 s_board.style.display = "inline";
+            }
+
+            else if (this.#model.getGameState() == "gameover") {
+                // Animate mainui
+                animateMainUI(true);
+                let res_found = document.getElementById("results-found");
+                let res_unfound = document.getElementById("results-unfound");
+                
+                this.#model.getWordLog().sort((word_a, word_b) => word_b.length - word_a.length)
+                .forEach((word, i) => {
+                    let resftr = document.createElement("tr");
+                    resftr.id = "results-found-" + i;
+                    resftr.innerHTML = `<td>${word}</td>
+                        <td>${AU.getWordValue(word)}</td>`;
+                    res_found.append(resftr);
+                })
             }
         });
 
@@ -93,6 +135,7 @@ export class AnagramsView {
         });
 
         this.#model.addEventListener('submitword', (e) => {
+            // Add submit text
             let submittext = document.getElementById("submit-text");
             submittext.style.opacity = 0;
             submittext.style.color = 'aliceblue';
@@ -118,7 +161,38 @@ export class AnagramsView {
                     }
                 }
             }, 5);
+
+            // Update scoreboard
+            let scorekeepers = document.getElementsByClassName("scorekeeper");
+            for (let i = 0; i < scorekeepers.length; i++) {
+                const sk = scorekeepers[i];
+                sk.innerText = this.#model.getScore();
+            }
         });
+
+        this.#model.addEventListener('timerupdate', (e) => {
+            let timer = document.getElementById("scoreboard-timer");
+            let time = this.#model.getTimer()
+            timer.innerText = timerString(time);
+        })
+
+        let animateMainUI = (game_over) => {
+            clearInterval(submit_word_anim);
+            let completion = 0;
+            const completion_max = game_over ? 500 : 1;
+            const start_percent = game_over ? 50 : -50;
+            clearInterval(gameover_anim);
+            gameover_anim = setInterval(() => {
+                if (completion >= completion_max) {
+                    clearInterval(gameover_anim);
+                } else {
+                    completion++;
+                    let completion_ratio = 0.5 - 0.5 * Math.cos( completion / completion_max * Math.PI);
+                    mainui.style.left = start_percent - 100 * (start_percent ? 1 : -1) * (completion_ratio) + '%';
+                    gameoverui.style.left = 100 + start_percent - 100 * (start_percent ? 1 : -1) * (completion_ratio) + '%';
+                }
+            }, 5);
+        }
 
         let createSubmitText = () => {
             let submittext = document.createElement("p");
@@ -157,7 +231,10 @@ export class AnagramsView {
             let scoreboard = document.createElement("table");
             scoreboard.id = "scoreboard";
             scoreboard.append();
-            scoreboard.innerHTML = `<tr><td id="scoreboard-score">SCORE: 0</td><td id="scoreboard-timer">1:00</td></tr>`;
+            scoreboard.innerHTML = `<tr>
+                <td id="scoreboard-score">SCORE: <span class="scorekeeper">0</span></td>
+                <td id="scoreboard-timer">${timerString(this.#model.getTimer())}</td>
+                </tr>`;
             mainui.append(scoreboard);
             scoreboard.style.width = this.#model.getLetterCount() + 'cm';
             return scoreboard;
@@ -179,6 +256,12 @@ export class AnagramsView {
                 }
             }
             return null;
+        }
+
+        let timerString = (time) => {
+            let m = Math.floor(time/60)
+            let ss = time%60 < 10 ? '0' + time%60 : time%60;
+            return `${m}:${ss}`;
         }
 
     }
