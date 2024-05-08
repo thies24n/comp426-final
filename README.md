@@ -18,5 +18,5 @@ Besides the Start and Replay buttons (which must be clicked), the controls are k
 to input characters, BACKSPACE to delete characters, and ENTER to submit your anagram. Valid anagrams are at
 least 3 letters long and are real English words.
 
-**NOTE:** This game now uses the SOWPODS English dictionary, which may not be what GamePigeon uses. I obtained this
+**NOTE:** This game now uses the SOWPODS English dictionary to validate words, which may not be what GamePigeon uses. I obtained this
 dictionary here: https://github.com/jesstess/Scrabble/blob/master/scrabble/sowpods.txt 
