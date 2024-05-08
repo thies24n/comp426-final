@@ -29,7 +29,7 @@ export class AnagramsModel extends EventTarget {
     }
 
     async initialize(letter_count = 7) {
-        if (this.#game_state != 'uninitialized') return;
+        if (this.#game_state != 'uninitialized' && this.#game_state != 'gameover') return;
 
         this.#letter_count = letter_count;
         this.#text_input = [];

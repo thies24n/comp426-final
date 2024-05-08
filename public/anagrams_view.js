@@ -47,7 +47,7 @@ export class AnagramsView {
         mainui.append(startbutton);
 
         /*
-            Gameplay UI
+            Gameplay UI (doing it like this was a mistake)
         */
         let t_table = null;
         let s_text = null;
@@ -78,6 +78,19 @@ export class AnagramsView {
             rt.style.width = this.#model.getLetterCount() * 0.75 + 'cm';
         }
 
+        let restartbutton = document.createElement('button');
+        restartbutton.type = "button";
+        restartbutton.append("Replay");
+        restartbutton.style.marginTop = "0.5cm";
+        restartbutton.onclick = (e) => {
+            t_table.remove();
+            s_text.remove();
+            s_board.remove();
+            this.#controller.startGame();
+            animateMainUI(false);
+        };
+        gameoverui.append(restartbutton);
+
         render_div.append(gameoverui);
 
         /*
@@ -90,12 +103,16 @@ export class AnagramsView {
 
         this.#model.addEventListener('stateupdate', async (e) => {
             if (this.#model.getGameState() == "playing") {
-                let t_table = createTileTable();
-                let s_text = createSubmitText();
-                let s_board = createScoreboard();
+                t_table = createTileTable();
+                s_text = createSubmitText();
+                s_board = createScoreboard();
                 t_table.style.display = "inline";
                 s_text.style.display = "inline";
                 s_board.style.display = "inline";
+            }
+
+            else if (this.#model.getGameState() == "uninitialized") {
+                
             }
 
             else if (this.#model.getGameState() == "gameover") {
@@ -103,6 +120,10 @@ export class AnagramsView {
                 animateMainUI(true);
                 let res_found = document.getElementById("results-found");
                 let res_unfound = document.getElementById("results-unfound");
+
+                // Clear found / missing words tables
+                res_found.innerHTML = "";
+                res_unfound.innerHTML = "";
                 
                 this.#model.getWordLog().sort((word_a, word_b) => word_b.length - word_a.length)
                 .forEach((word, i) => {
@@ -195,8 +216,13 @@ export class AnagramsView {
 
         let animateMainUI = (game_over) => {
             let completion = 0;
-            const completion_max = game_over ? 500 : 1;
-            const start_percent = game_over ? 50 : -50;
+            const completion_max = 500;
+            const start_percent = 50;
+            if (!game_over) {
+                mainui.style.left = start_percent + '%';
+                gameoverui.style.left = 100 + start_percent + '%';
+                return;
+            }
             clearInterval(gameover_anim);
             gameover_anim = setInterval(() => {
                 if (completion >= completion_max) {

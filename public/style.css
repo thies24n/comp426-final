@@ -16,7 +16,7 @@ h1 {
 
 button {
     border: 3px solid aliceblue;
-    border-radius: 10%;
+    border-radius: 10px;
     box-sizing: border-box;
     background-color: #13121f;
 
