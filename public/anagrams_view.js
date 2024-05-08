@@ -10,7 +10,7 @@ export class AnagramsView {
         this.#controller = controller;
     }
 
-    render(render_div) {
+    async render(render_div) {
         /*
             "Global" variables
         */
@@ -40,11 +40,15 @@ export class AnagramsView {
         let startbutton = document.createElement('button');
         startbutton.type = "button";
         startbutton.append("Start");
+        mainui.append(startbutton);
+
+        let br = document.createElement('br');
+        mainui.append(br);
+
         startbutton.onclick = (e) => {
             startbutton.style.display = "none";
             this.#controller.startGame();
         };
-        mainui.append(startbutton);
 
         /*
             Gameplay UI (doing it like this was a mistake)
@@ -91,6 +95,11 @@ export class AnagramsView {
         };
         gameoverui.append(restartbutton);
 
+        let totalpoints = document.createElement('div');
+        totalpoints.append("");
+        totalpoints.id = "total-points";
+        gameoverui.append(totalpoints);
+
         render_div.append(gameoverui);
 
         /*
@@ -116,6 +125,14 @@ export class AnagramsView {
             }
 
             else if (this.#model.getGameState() == "gameover") {
+                // Get total points
+                let total_points = document.getElementById("total-points");
+                let tp_value = await fetch(AU.base_url + "game/totalpoints/", {method: "GET"})
+                    .then(response => response.json());
+                if (total_points) {
+                    total_points.innerText = `We have accumulated ${tp_value} points!`;
+                }
+
                 // Animate mainui
                 animateMainUI(true);
                 let res_found = document.getElementById("results-found");

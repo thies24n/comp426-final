@@ -9,6 +9,7 @@
   "author": "Nicholas Thies",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "sqlite-async": "^1.2.0"
   }
 }

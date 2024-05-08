@@ -153,3 +153,9 @@ table {
     opacity: 0;
     transform: translate(-50%, -50%);
 }
+
+#total-points {
+    margin-top: 0.5cm;
+    opacity: 0.5;
+    font-size: smaller;
+}
